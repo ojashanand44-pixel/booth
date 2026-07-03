@@ -28,7 +28,7 @@
   h1{ font-family:'Fraunces', serif; font-weight:600; font-size:32px; line-height:1.05; margin:0 0 4px; }
   h1 em{ font-style:italic; color:var(--coral); }
   .sub{ font-size:12.5px; color:rgba(46,31,46,0.62); margin-bottom:22px; line-height:1.5; }
-  .card{ background:var(--paper); border-radius:18px; padding:20px; box-shadow: 0 1px 0 rgba(46,31,46,0.04), 0 14px 30px -18px rgba(46,31,46,0.35); border:1px solid var(--line); margin-bottom:16px; }
+  .card{ background:var(--paper); border-radius:18px; padding:20px; box-shadow: 0 1px 0 rgba(46,31,46,0.04), 0 14px 30px -18px rgba(46,31,46,0.35); border:1px solid var(--line); margin-bottom:16px; position:relative; }
   label{ display:block; font-size:10.5px; letter-spacing:.1em; text-transform:uppercase; font-weight:700; color:rgba(46,31,46,0.55); margin-bottom:7px; }
   input[type=text], textarea{ width:100%; font-family:'Space Mono', monospace; font-size:13px; padding:12px 14px; border-radius:10px; border:1.5px solid var(--line); background:#FBF6EE; color:var(--ink); letter-spacing:.02em; outline:none; }
   input[type=text]:focus, textarea:focus{ border-color:var(--coral); }
@@ -49,12 +49,13 @@
   .pose-label{ text-align:center; font-family:'Fraunces', serif; font-style:italic; font-weight:600; font-size:15px; color:rgba(46,31,46,.7); margin-bottom:10px; }
   .duo-stage{ position:relative; display:flex; gap:2px; border-radius:16px; overflow:hidden; background:#1A1220; }
   .pane{ position:relative; flex:1; aspect-ratio:3/4; overflow:hidden; background:#1A1220; }
-  .pane video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .pane video{ width:100%; height:100%; object-fit:cover; display:block; transition:filter .25s ease; }
   .pane.mirror video{ transform:scaleX(-1); }
-  .tag{ position:absolute; bottom:9px; left:9px; padding:5px 11px; border-radius:999px; font-size:10.5px; font-weight:700; letter-spacing:.05em; color:#fff; }
+  .tag{ position:absolute; bottom:9px; left:9px; padding:5px 11px; border-radius:999px; font-size:10.5px; font-weight:700; letter-spacing:.05em; color:#fff; z-index:2; }
   .tag.me{ background:var(--coral); } .tag.them{ background:var(--blue); }
   .waiting-note{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; text-align:center; color:rgba(255,255,255,.75); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; padding:20px; line-height:1.6; }
   .status-pill{ position:absolute; top:9px; left:9px; background:rgba(0,0,0,0.5); color:#fff; font-size:9.5px; letter-spacing:.08em; padding:5px 9px; border-radius:999px; text-transform:uppercase; z-index:3; }
+  .sound-toggle{ position:absolute; top:9px; right:9px; background:rgba(0,0,0,0.5); color:#fff; border:none; font-size:12px; padding:5px 9px; border-radius:999px; z-index:3; cursor:pointer; font-family:'Space Mono',monospace; }
   .countdown-num{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:'Fraunces', serif; font-weight:600; font-style:italic; font-size:100px; color:#fff; text-shadow:0 6px 26px rgba(0,0,0,.45); pointer-events:none; z-index:4; background:rgba(0,0,0,0.15); }
   .flash{ position:absolute; inset:0; background:#fff; opacity:0; pointer-events:none; z-index:5; }
   .flash.on{ animation:flashpop .45s ease-out; }
@@ -74,6 +75,26 @@
   .hint-box{ background:#F4F6FD; border:1px solid #5B7FDE33; color:#3a4c8f; font-size:11.5px; padding:11px 13px; border-radius:10px; margin-top:12px; line-height:1.5; }
   .footer-note{ text-align:center; font-size:10.5px; color:rgba(46,31,46,.4); margin-top:22px; letter-spacing:.04em; }
   .back-link{ font-size:11px; color:rgba(46,31,46,.5); cursor:pointer; text-decoration:underline; margin-top:14px; display:inline-block; }
+
+  /* --- new: settings rows --- */
+  .settings-block{ margin-bottom:18px; padding-bottom:16px; border-bottom:1px dashed var(--line); }
+  .chip-row{ display:flex; gap:8px; flex-wrap:wrap; }
+  .chip{ padding:9px 13px; border-radius:999px; border:1.5px solid var(--line); background:#FBF6EE; font-family:'Space Mono', monospace; font-size:11.5px; font-weight:700; letter-spacing:.03em; cursor:pointer; color:var(--ink); }
+  .chip.selected{ background:var(--ink); color:var(--paper); border-color:var(--ink); }
+  .swatch{ width:38px; height:38px; border-radius:50%; border:2px solid transparent; cursor:pointer; display:flex; align-items:center; justify-content:center; font-size:15px; box-shadow:inset 0 0 0 1px rgba(46,31,46,.15); }
+  .swatch.selected{ border-color:var(--coral); box-shadow:0 0 0 3px rgba(240,99,122,0.18); }
+  .swatch-row{ display:flex; gap:10px; }
+  .mini-label{ font-size:9.5px; text-align:center; margin-top:5px; color:rgba(46,31,46,.5); letter-spacing:.04em; }
+  .swatch-col{ display:flex; flex-direction:column; align-items:center; }
+  .inline-controls{ margin:10px 0 4px; }
+  .inline-controls .chip-row{ margin-top:6px; }
+  .caption-field{ margin-top:12px; }
+  #confettiLayer{ position:fixed; inset:0; pointer-events:none; z-index:999; overflow:hidden; }
+  .confetti-piece{ position:absolute; top:-30px; font-size:20px; will-change:transform,opacity; animation:confettiFall linear forwards; }
+  @keyframes confettiFall{
+    0%{ transform:translateY(0) rotate(0deg); opacity:1; }
+    100%{ transform:translateY(110vh) rotate(360deg); opacity:0; }
+  }
 </style>
 </head>
 <body>
@@ -96,6 +117,27 @@
 
   <!-- SCREEN A: STARTER (creates offer) -->
   <div id="screen-start" class="card hidden">
+
+    <div class="settings-block">
+      <label>How many poses?</label>
+      <div class="chip-row" id="frameChoiceRow">
+        <div class="chip" data-frames="3">3 poses</div>
+        <div class="chip selected" data-frames="4">4 poses</div>
+        <div class="chip" data-frames="6">6 poses</div>
+      </div>
+    </div>
+
+    <div class="settings-block">
+      <label>Strip style</label>
+      <div class="chip-row" id="themeChoiceRow">
+        <div class="chip selected" data-theme="classic">Classic Cream</div>
+        <div class="chip" data-theme="polaroid">Polaroid</div>
+        <div class="chip" data-theme="midnight">Midnight Gold</div>
+        <div class="chip" data-theme="filmnoir">Film Noir</div>
+      </div>
+      <div class="muted">Your partner's strip will match this automatically.</div>
+    </div>
+
     <div class="step">
       <div><span class="step-num">1</span>Send this code to your partner</div>
       <div class="spinner-line hidden" id="startGenerating"><span class="dot"></span> preparing your code…</div>
@@ -133,6 +175,7 @@
     <div class="pose-label" id="poseLabel">pose 1 of 4</div>
     <div class="duo-stage" id="duoStage">
       <div class="status-pill" id="statusPill">connecting…</div>
+      <button class="sound-toggle" id="soundToggle" title="Toggle sound">🔊</button>
       <div class="pane mirror" id="myPane">
         <video id="myVideo" autoplay playsinline muted></video>
         <div class="tag me" id="myTag">You</div>
@@ -145,6 +188,31 @@
       <div class="countdown-num hidden" id="countdownNum"></div>
       <div class="flash" id="flashEl"></div>
     </div>
+
+    <div class="inline-controls">
+      <label>Your filter</label>
+      <div class="chip-row" id="filterRow">
+        <div class="chip selected" data-filter="none">Original</div>
+        <div class="chip" data-filter="noir">Noir</div>
+        <div class="chip" data-filter="vintage">Vintage</div>
+        <div class="chip" data-filter="vivid">Vivid</div>
+        <div class="chip" data-filter="dreamy">Dreamy</div>
+        <div class="chip" data-filter="frost">Frost</div>
+      </div>
+    </div>
+
+    <div class="inline-controls">
+      <label>Corner sticker</label>
+      <div class="chip-row" id="stickerRow">
+        <div class="chip selected" data-sticker="">None</div>
+        <div class="chip" data-sticker="💕">💕</div>
+        <div class="chip" data-sticker="✨">✨</div>
+        <div class="chip" data-sticker="🌸">🌸</div>
+        <div class="chip" data-sticker="⭐">⭐</div>
+        <div class="chip" data-sticker="🔥">🔥</div>
+      </div>
+    </div>
+
     <div class="frame-track" id="frameTrack"></div>
     <button class="primary" id="startBtn">Start Countdown · 3s</button>
     <div id="boothError" class="error-box hidden"></div>
@@ -156,6 +224,10 @@
     <div class="row-2">
       <div class="thumb-wrap"><img id="pairImgMe"></div>
       <div class="thumb-wrap"><img id="pairImgThem"></div>
+    </div>
+    <div class="caption-field hidden" id="captionField">
+      <label for="captionInput">Strip caption (optional)</label>
+      <input type="text" id="captionInput" maxlength="40" placeholder="e.g. names, a date, an inside joke">
     </div>
     <button class="primary hidden" id="nextPoseBtn">Next Pose</button>
     <button class="primary hidden" id="finishBtn">Finish &amp; Build Strip</button>
@@ -171,6 +243,7 @@
 
   <div class="footer-note">made for the miles between you two</div>
 </div>
+<div id="confettiLayer"></div>
 
 <script>
 (function(){
@@ -178,7 +251,11 @@
 
   let myName = '';
   let iAmStarter = false;
-  const MAX_FRAMES = 4;
+  let MAX_FRAMES = 4;
+  let currentTheme = 'classic';
+  let myFilterKey = 'none';
+  let stickerEmoji = '';
+  let soundOn = true;
   let stream = null;
   let pc = null, dc = null;
   let theirName = 'Partner';
@@ -188,6 +265,7 @@
   let lastTriggerAt = null;
   let countdownTimer = null;
   let capturing = false;
+  let boothEntered = false;
   const incomingChunks = {}; // frame -> {chunks:[], total}
 
   const ICE_CONFIG = { iceServers: [
@@ -195,10 +273,72 @@
     { urls: 'stun:stun1.l.google.com:19302' }
   ]};
 
+  const FILTERS = {
+    none:    { css: 'none' },
+    noir:    { css: 'grayscale(1) contrast(1.15) brightness(0.95)' },
+    vintage: { css: 'sepia(0.45) contrast(1.05) saturate(1.1) brightness(1.02)' },
+    vivid:   { css: 'saturate(1.6) contrast(1.1)' },
+    dreamy:  { css: 'brightness(1.1) contrast(0.9) saturate(1.2)' },
+    frost:   { css: 'saturate(0.6) brightness(1.08) contrast(1.05)' }
+  };
+
+  const THEMES = {
+    classic:  { bg:'#FFFDF8', border:'rgba(46,31,46,0.12)', dotColor:'rgba(46,31,46,0.15)', text:'#2E1F2E', accent:'#F0637A', style:'dots' },
+    polaroid: { bg:'#FFFFFF', border:'#E7E2D8', dotColor:null, text:'#2E1F2E', accent:'#D8A24A', style:'plain', extraGap:16 },
+    midnight: { bg:'#1B1730', border:'rgba(216,162,74,0.35)', dotColor:'rgba(216,162,74,0.5)', text:'#F4E9CE', accent:'#D8A24A', style:'dots' },
+    filmnoir: { bg:'#111111', border:'#3a3a3a', dotColor:'#555', text:'#F5F5F5', accent:'#F0637A', style:'sprockets', mono:true }
+  };
+
   function showError(elId, msg){
     const el = $(elId); el.textContent = msg; el.classList.remove('hidden');
     setTimeout(()=>el.classList.add('hidden'), 5000);
   }
+
+  // ---------- sound ----------
+  let audioCtx = null;
+  function beep(freq, dur){
+    if(!soundOn) return;
+    try{
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      const o = audioCtx.createOscillator(); const g = audioCtx.createGain();
+      o.type = 'sine'; o.frequency.value = freq;
+      o.connect(g); g.connect(audioCtx.destination);
+      g.gain.setValueAtTime(0.16, audioCtx.currentTime);
+      g.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + dur);
+      o.start(); o.stop(audioCtx.currentTime + dur);
+    }catch(e){ /* audio not available, ignore */ }
+  }
+  $('soundToggle').addEventListener('click', ()=>{
+    soundOn = !soundOn;
+    $('soundToggle').textContent = soundOn ? '🔊' : '🔈';
+  });
+
+  // ---------- settings chips (starter only) ----------
+  $('frameChoiceRow').addEventListener('click', (e)=>{
+    const chip = e.target.closest('.chip'); if(!chip) return;
+    [...$('frameChoiceRow').children].forEach(c=>c.classList.remove('selected'));
+    chip.classList.add('selected');
+    MAX_FRAMES = parseInt(chip.dataset.frames, 10);
+  });
+  $('themeChoiceRow').addEventListener('click', (e)=>{
+    const chip = e.target.closest('.chip'); if(!chip) return;
+    [...$('themeChoiceRow').children].forEach(c=>c.classList.remove('selected'));
+    chip.classList.add('selected');
+    currentTheme = chip.dataset.theme;
+  });
+  $('filterRow').addEventListener('click', (e)=>{
+    const chip = e.target.closest('.chip'); if(!chip) return;
+    [...$('filterRow').children].forEach(c=>c.classList.remove('selected'));
+    chip.classList.add('selected');
+    myFilterKey = chip.dataset.filter;
+    $('myVideo').style.filter = FILTERS[myFilterKey].css;
+  });
+  $('stickerRow').addEventListener('click', (e)=>{
+    const chip = e.target.closest('.chip'); if(!chip) return;
+    [...$('stickerRow').children].forEach(c=>c.classList.remove('selected'));
+    chip.classList.add('selected');
+    stickerEmoji = chip.dataset.sticker || '';
+  });
 
   // ---------- name + choice screen ----------
   $('chooseStart').addEventListener('click', async ()=>{
@@ -261,8 +401,9 @@
 
   function wireDataChannel(){
     dc.onopen = ()=>{
-      send({type:'hello', name: myName});
-      enterBooth();
+      const helloMsg = { type:'hello', name: myName };
+      if(iAmStarter){ helloMsg.frames = MAX_FRAMES; helloMsg.theme = currentTheme; }
+      send(helloMsg);
     };
     dc.onmessage = (e)=>{
       let msg; try{ msg = JSON.parse(e.data); }catch(err){ return; }
@@ -277,6 +418,9 @@
       theirName = msg.name || 'Partner';
       $('theirTag').textContent = theirName;
       $('theirTag').style.display = 'block';
+      if(msg.frames){ MAX_FRAMES = msg.frames; }
+      if(msg.theme){ currentTheme = msg.theme; }
+      enterBooth();
     } else if(msg.type === 'start'){
       runLocalCountdown(msg.triggerAt, msg.frame);
     } else if(msg.type === 'photo-start'){
@@ -359,6 +503,8 @@
 
   // ---------- Booth ----------
   function enterBooth(){
+    if(boothEntered) return;
+    boothEntered = true;
     ['screen-choose','screen-start','screen-join'].forEach(id=>$(id).classList.add('hidden'));
     $('screen-booth').classList.remove('hidden');
     $('myTag').textContent = myName;
@@ -388,14 +534,17 @@
     if(countdownTimer) clearInterval(countdownTimer);
     $('startBtn').disabled = true;
     const numEl = $('countdownNum'); numEl.classList.remove('hidden');
+    let lastSec = null;
     countdownTimer = setInterval(()=>{
       const remain = triggerAt - Date.now();
       const secs = Math.ceil(remain/1000);
       if(remain <= 0){
         clearInterval(countdownTimer); numEl.classList.add('hidden');
+        beep(1200, 0.12);
         doCapture(frame);
         return;
       }
+      if(secs !== lastSec){ lastSec = secs; beep(660, 0.06); }
       numEl.textContent = secs > 0 ? secs : '';
     }, 100);
   }
@@ -415,8 +564,24 @@
     canvas.width = 360; canvas.height = 480;
     const ctx = canvas.getContext('2d');
     ctx.translate(360,0); ctx.scale(-1,1);
+    ctx.filter = FILTERS[myFilterKey].css;
     ctx.drawImage(video, sx, sy, cropW, cropH, 0, 0, 360, 480);
-    const dataUrl = canvas.toDataURL('image/jpeg', 0.6);
+    ctx.filter = 'none';
+    ctx.setTransform(1,0,0,1,0,0); // reset transform for overlay drawing below
+
+    if(myFilterKey === 'noir' || myFilterKey === 'vintage'){
+      const grad = ctx.createRadialGradient(180,240,120,180,240,320);
+      grad.addColorStop(0,'rgba(0,0,0,0)');
+      grad.addColorStop(1, myFilterKey === 'noir' ? 'rgba(0,0,0,0.32)' : 'rgba(60,30,10,0.26)');
+      ctx.fillStyle = grad; ctx.fillRect(0,0,360,480);
+    }
+    if(stickerEmoji){
+      ctx.font = '30px sans-serif';
+      ctx.textAlign = 'right'; ctx.textBaseline = 'bottom';
+      ctx.fillText(stickerEmoji, 344, 466);
+    }
+
+    const dataUrl = canvas.toDataURL('image/jpeg', 0.62);
 
     myPhotos[frame] = dataUrl;
     sendPhotoChunked(frame, dataUrl);
@@ -444,6 +609,12 @@
     const isLast = frame + 1 >= MAX_FRAMES;
     $('nextPoseBtn').classList.toggle('hidden', isLast);
     $('finishBtn').classList.toggle('hidden', !isLast);
+    $('captionField').classList.toggle('hidden', !isLast);
+    if(isLast){
+      const n1 = iAmStarter ? myName : theirName;
+      const n2 = iAmStarter ? theirName : myName;
+      $('captionInput').placeholder = n1 + ' × ' + n2;
+    }
 
     currentFrame = frame + 1;
     buildFrameTrack(currentFrame); updatePoseLabel(currentFrame);
@@ -460,6 +631,7 @@
   $('finishBtn').addEventListener('click', async ()=>{
     $('screen-pair').classList.add('hidden');
     await buildStrip();
+    fireConfetti();
   });
   $('resetBtn').addEventListener('click', ()=>{
     for(const k in myPhotos) delete myPhotos[k];
@@ -477,20 +649,30 @@
   }
 
   async function buildStrip(){
+    const theme = THEMES[currentTheme];
     const canvas = $('stripCanvas');
-    const pad = 18, gap = 10, photoW = 156, photoH = 208;
+    const pad = 18, gap = 10 + (theme.extraGap || 0), photoW = 156, photoH = 208;
     const stripW = photoW*2 + pad*2 + gap;
     const stripH = pad + (photoH+gap)*MAX_FRAMES + 46;
     canvas.width = stripW; canvas.height = stripH;
     const ctx = canvas.getContext('2d');
 
-    ctx.fillStyle = '#FFFDF8'; ctx.fillRect(0,0,stripW,stripH);
-    ctx.strokeStyle = 'rgba(46,31,46,0.12)'; ctx.lineWidth = 2;
+    ctx.fillStyle = theme.bg; ctx.fillRect(0,0,stripW,stripH);
+    ctx.strokeStyle = theme.border; ctx.lineWidth = 2;
     ctx.strokeRect(1,1,stripW-2,stripH-2);
-    ctx.fillStyle = 'rgba(46,31,46,0.15)';
-    for(let y=14; y<stripH-14; y+=22){
-      ctx.beginPath(); ctx.arc(9,y,3,0,Math.PI*2); ctx.fill();
-      ctx.beginPath(); ctx.arc(stripW-9,y,3,0,Math.PI*2); ctx.fill();
+
+    if(theme.style === 'dots'){
+      ctx.fillStyle = theme.dotColor;
+      for(let y=14; y<stripH-14; y+=22){
+        ctx.beginPath(); ctx.arc(9,y,3,0,Math.PI*2); ctx.fill();
+        ctx.beginPath(); ctx.arc(stripW-9,y,3,0,Math.PI*2); ctx.fill();
+      }
+    } else if(theme.style === 'sprockets'){
+      ctx.fillStyle = theme.dotColor;
+      for(let y=12; y<stripH-12; y+=18){
+        ctx.fillRect(6, y, 8, 10);
+        ctx.fillRect(stripW-14, y, 8, 10);
+      }
     }
 
     for(let i=0;i<MAX_FRAMES;i++){
@@ -498,16 +680,37 @@
       const meSrc = myPhotos[i], themSrc = theirPhotos[i];
       const leftSrc = iAmStarter ? meSrc : themSrc;
       const rightSrc = iAmStarter ? themSrc : meSrc;
+      if(theme.mono){ ctx.filter = 'grayscale(1) contrast(1.05)'; }
       if(leftSrc){ const im = await loadImg(leftSrc); ctx.drawImage(im, pad, y, photoW, photoH); }
       if(rightSrc){ const im = await loadImg(rightSrc); ctx.drawImage(im, pad+photoW+gap, y, photoW, photoH); }
+      ctx.filter = 'none';
     }
 
     const n1 = iAmStarter ? myName : theirName;
     const n2 = iAmStarter ? theirName : myName;
-    ctx.fillStyle = '#2E1F2E'; ctx.font = '600 15px Fraunces, serif'; ctx.textAlign = 'center';
-    ctx.fillText(n1 + '  ×  ' + n2, stripW/2, stripH-16);
+    const customCaption = $('captionInput').value.trim();
+    const captionText = customCaption || (n1 + '  ×  ' + n2);
+    ctx.fillStyle = theme.text; ctx.font = '600 15px Fraunces, serif'; ctx.textAlign = 'center';
+    ctx.fillText(captionText, stripW/2, stripH-16);
 
     $('screen-strip').classList.remove('hidden');
+  }
+
+  function fireConfetti(){
+    const layer = $('confettiLayer');
+    const emojis = ['💕','✨','🌸','⭐','💫','🎉'];
+    for(let i=0;i<26;i++){
+      const span = document.createElement('span');
+      span.className = 'confetti-piece';
+      span.textContent = emojis[Math.floor(Math.random()*emojis.length)];
+      span.style.left = Math.random()*100 + 'vw';
+      span.style.fontSize = (14 + Math.random()*14) + 'px';
+      const dur = 2 + Math.random()*1.6;
+      span.style.animationDuration = dur + 's';
+      span.style.animationDelay = (Math.random()*0.4) + 's';
+      layer.appendChild(span);
+      setTimeout(()=>span.remove(), (dur+0.5)*1000);
+    }
   }
 
   $('downloadBtn').addEventListener('click', ()=>{
